@@ -64,4 +64,20 @@ public class TodoController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTodo(int id)
+    {
+        // Using interpolated strings in ExecuteSqlRawAsync is safe as EF Core 
+        // treats them as parameters, not literal string concatenation.
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(
+            "DELETE FROM Todos WHERE Id = {0}", id);
+
+        if (rowsAffected == 0)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }
